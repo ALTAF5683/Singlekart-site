@@ -172,3 +172,25 @@ body {
   font-size: 1.1em;
   color: #f1f1f1;
 }
+.price-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+.price-card {
+  background: #1f1f1f;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #333;
+}
+.price-card h2 {
+  margin: 0 0 10px;
+}
+.price-card p {
+  margin: 6px 0;
+  font-size: 1.1em;
+}
