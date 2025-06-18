@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Crypto Prices - SignalKart</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dark-theme">
+  <header class="hero">
+    <h1>Live Crypto Prices</h1>
+    <p>BTC, ETH, USDT, BNB – updated every 30 seconds</p>
+  </header>
+
+  <section class="price-grid" id="priceGrid">
+    <div class="price-card" id="btc"></div>
+    <div class="price-card" id="eth"></div>
+    <div class="price-card" id="usdt"></div>
+    <div class="price-card" id="bnb"></div>
+  </section>
+
+  <script>
+    async function fetchPrices() {
+      const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tether,binancecoin&vs_currencies=inr&include_24hr_change=true");
+      const data = await res.json();
+
+      const cards = {
+        btc: {
+          name: "Bitcoin (BTC)",
+          price: data.bitcoin.inr,
+          change: data.bitcoin.inr_24h_change
+        },
+        eth: {
+          name: "Ethereum (ETH)",
+          price: data.ethereum.inr,
+          change: data.ethereum.inr_24h_change
+        },
+        usdt: {
+          name: "Tether (USDT)",
+          price: data.tether.inr,
+          change: data.tether.inr_24h_change
+        },
+        bnb: {
+          name: "Binance Coin (BNB)",
+          price: data.binancecoin.inr,
+          change: data.binancecoin.inr_24h_change
+        }
+      };
+
+      for (const id in cards) {
+        const c = cards[id];
+        const card = document.getElementById(id);
+        const color = c.change >= 0 ? "green" : "red";
+        card.innerHTML = `
+          <h2>${c.name}</h2>
+          <p>₹${c.price.toLocaleString()}</p>
+          <p style="color:${color}">${c.change.toFixed(2)}% (24h)</p>
+        `;
+      }
+    }
+
+    fetchPrices();
+    setInterval(fetchPrices, 30000); // every 30s
+  </script>
+</body>
+</html>
