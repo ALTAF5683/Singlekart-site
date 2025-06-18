@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VIP Calculator - SignalKart</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dark-theme">
+  <header class="hero">
+    <h1>VIP Access Calculator</h1>
+    <p>Enter your USDT amount to see how much VIP access you get</p>
+  </header>
+
+  <section class="calculator">
+    <label for="usdtInput">Enter USDT Amount (min 10):</label>
+    <input type="number" id="usdtInput" min="10" step="1" placeholder="e.g. 27" />
+    <button onclick="calculateAccess()">Calculate</button>
+
+    <div id="result" class="calc-result"></div>
+  </section>
+
+  <script>
+    function calculateAccess() {
+      const input = parseFloat(document.getElementById('usdtInput').value);
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '';
+
+      if (isNaN(input) || input < 10) {
+        resultDiv.innerHTML = `<p>Please enter at least 10 USDT.</p>`;
+        return;
+      }
+
+      const rate1 = 10;  // 1 month = 10 USDT
+      const rate3 = 27;  // 3 months = 27 USDT
+      const rate6 = 50;  // 6 months = 50 USDT
+
+      let months = 0;
+      let message = '';
+
+      if (input >= rate6) {
+        months = 6;
+        const leftover = input - rate6;
+        message = `🎉 You get <strong>6 months</strong> VIP access for <strong>${input} USDT</strong>.<br>`;
+        if (leftover > 0) {
+          message += `💰 Leftover: ${leftover.toFixed(2)} USDT (can be used later).`;
+        }
+      } else if (input >= rate3) {
+        months = Math.floor(input / (rate3 / 3));
+        message = `✅ You get <strong>${months}</strong> months VIP access at ~${(input/months).toFixed(2)} USDT/month.`;
+      } else {
+        months = Math.floor(input / rate1);
+        message = `You get <strong>${months}</strong> month(s) VIP access at 10 USDT/month.`;
+      }
+
+      resultDiv.innerHTML = `<p>${message}</p>`;
+    }
+  </script>
+</body>
+</html>
