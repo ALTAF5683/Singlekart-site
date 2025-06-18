@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Coin Categories - SignalKart</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dark-theme">
+  <header class="hero">
+    <h1>Coin Categories</h1>
+    <p>Filter by category & see real-time prices</p>
+  </header>
+
+  <section class="categories">
+    <button onclick="loadCategory('meme')" class="cat-btn">Meme Coins</button>
+    <button onclick="loadCategory('solana')" class="cat-btn">Solana Ecosystem</button>
+    <button onclick="loadCategory('ethereum')" class="cat-btn">Ethereum Ecosystem</button>
+    <button onclick="loadCategory('ai')" class="cat-btn">AI Coins</button>
+  </section>
+
+  <section id="coinGrid" class="price-grid">
+    <p>Select a category to load coins...</p>
+  </section>
+
+  <script>
+    const categories = {
+      meme: ['dogecoin','shiba-inu','pepe'],
+      solana: ['solana','bonk','raydium'],
+      ethereum: ['ethereum','chainlink','aave'],
+      ai: ['fetch-ai','singularitynet','ocean-protocol']
+    };
+
+    async function loadCategory(cat) {
+      const ids = categories[cat].join(',');
+      try {
+        const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=inr&include_24hr_change=true`);
+        const data = await res.json();
+        const grid = document.getElementById('coinGrid');
+        grid.innerHTML = '';
+        for (let id of categories[cat]) {
+          const coin = data[id];
+          const change = coin?.inr_24h_change?.toFixed(2) ?? '—';
+          const color = change >= 0 ? 'green' : 'red';
+          const name = id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          grid.innerHTML += `
+            <div class="price-card">
+              <h2>${name}</h2>
+              <p>₹${coin?.inr?.toLocaleString() ?? '--'}</p>
+              <p style="color:${color}">${change}% (24h)</p>
+            </div>`;
+        }
+      } catch {
